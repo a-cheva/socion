@@ -130,10 +130,24 @@ export default function LoginPage() {
             </form>
           </div>
 
-          <div className="mt-6">
+          <form
+            action={async () => {
+              "use server"
+              await signIn("credentials", { redirectTo: "/feed" })
+            }}
+          >
+            <button
+              type="submit"
+              className="w-full flex items-center justify-center gap-2 bg-[#161f1a] hover:bg-[#1e2e26] border border-dashed border-[#2a3d32] text-[#8a9e94] hover:text-white font-medium h-10 rounded-lg transition-colors text-sm mt-1"
+            >
+              Entrar como usuário de teste
+            </button>
+          </form>
+
+          <div className="mt-4">
             <a
               href="/feed"
-              className="w-full flex items-center justify-center gap-2 text-[#8a9e94] hover:text-white text-sm transition-colors py-2"
+              className="w-full flex items-center justify-center gap-2 text-[#4a5e54] hover:text-[#8a9e94] text-xs transition-colors py-2"
             >
               Explorar sem cadastro →
             </a>
