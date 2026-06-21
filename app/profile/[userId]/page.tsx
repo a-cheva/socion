@@ -114,7 +114,7 @@ export default async function ProfilePage({ params }: { params: { userId: string
                 }`}>
                   {p.verificationStatus === "VERIFIED" ? "✓ Verificado" : "Em verificação"}
                 </span>
-                {p.offeringRole.map((r) => (
+                {(p.offeringRole as string[]).map((r: string) => (
                   <span key={r} className="text-xs px-2 py-0.5 rounded-full bg-[#1e2e26] text-[#8a9e94]">{r}</span>
                 ))}
               </div>
