@@ -31,7 +31,7 @@ export default async function MatchesPage() {
         <nav className="flex items-center gap-1">
           <Link href="/feed" className="px-3 py-1.5 text-sm text-[#8a9e94] hover:text-white rounded-lg transition-colors">Feed</Link>
           <Link href="/matches" className="px-3 py-1.5 text-sm text-white bg-[#1e2e26] rounded-lg">Matches</Link>
-          <Link href="/dashboard" className="px-3 py-1.5 text-sm text-[#8a9e94] hover:text-white rounded-lg transition-colors">Dashboard</Link>
+          <Link href="/dashboard/profile" className="px-3 py-1.5 text-sm text-[#8a9e94] hover:text-white rounded-lg transition-colors">Meu Perfil</Link>
         </nav>
       </header>
 
