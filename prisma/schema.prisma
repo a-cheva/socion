@@ -1,0 +1,277 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Plan {
+  TRIAL
+  FREE
+  PRO
+  ENTERPRISE
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum AvailabilityType {
+  FULL_TIME
+  PART_TIME
+}
+
+enum InvestmentRange {
+  NONE
+  UP_TO_10K
+  UP_TO_50K
+  ABOVE_50K
+}
+
+enum BusinessType {
+  SAAS
+  MARKETPLACE
+  AI
+  ECOMMERCE
+  AGENCY
+  SERVICES
+}
+
+enum PartnerRole {
+  TECHNOLOGY
+  MARKETING
+  PRODUCT
+  SALES
+  OPERATIONS
+  FINANCE
+  LEGAL
+}
+
+enum ProposalStatus {
+  SENT
+  VIEWED
+  ACCEPTED
+  REJECTED
+}
+
+enum PartnershipStatus {
+  MATCHED
+  PROPOSAL_SENT
+  CONTRACT_IN_PROGRESS
+  CONTRACT_SIGNED
+  ACTIVE
+  DISSOLVED
+}
+
+// Auth.js v5 tables
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  stripeCustomerId       String?   @unique
+  stripeSubscriptionId   String?   @unique
+  stripePriceId          String?
+  stripeCurrentPeriodEnd DateTime?
+
+  plan        Plan     @default(TRIAL)
+  trialEndsAt DateTime @default(dbgenerated("NOW() + INTERVAL '14 days'"))
+
+  accounts          Account[]
+  sessions          Session[]
+  profile           Profile?
+  sentLikes         Like[]        @relation("SentLikes")
+  receivedLikes     Like[]        @relation("ReceivedLikes")
+  sentProposals     Proposal[]    @relation("SentProposals")
+  receivedProposals Proposal[]    @relation("ReceivedProposals")
+  partnerships1     Partnership[] @relation("UserA")
+  partnerships2     Partnership[] @relation("UserB")
+}
+
+model Profile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  headline     String?
+  location     String?
+  linkedinUrl  String?
+  linkedinData Json?
+  bio          String? @db.Text
+
+  seekingRole         PartnerRole[]
+  seekingAvailability AvailabilityType?
+  seekingInvestment   InvestmentRange?
+  seekingBusinessType BusinessType[]
+
+  offeringRole         PartnerRole[]
+  offeringAvailability AvailabilityType?
+  offeringInvestment   InvestmentRange?
+  offeringBusinessType BusinessType[]
+
+  verificationStatus VerificationStatus @default(PENDING)
+  trustScore         Float?
+  identityScore      Float?
+  experienceScore    Float?
+  competenceScore    Float?
+  reputationScore    Float?
+  commitmentScore    Float?
+  compatibilityScore Float?
+
+  pitchVideoUrl String?
+  weeklyHours   Int?
+  values        Json?
+
+  skills      Skill[]
+  experiences Experience[]
+  projects    Project[]
+  documents   Document[]
+}
+
+model Skill {
+  id        String      @id @default(cuid())
+  profileId String
+  profile   Profile     @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  name      String
+  category  PartnerRole?
+  verified  Boolean     @default(false)
+  evidence  String?     @db.Text
+  source    String?
+  createdAt DateTime    @default(now())
+}
+
+model Experience {
+  id          String    @id @default(cuid())
+  profileId   String
+  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  company     String
+  title       String
+  startDate   DateTime?
+  endDate     DateTime?
+  current     Boolean   @default(false)
+  description String?   @db.Text
+  source      String?   @default("linkedin")
+  createdAt   DateTime  @default(now())
+}
+
+model Project {
+  id          String    @id @default(cuid())
+  profileId   String
+  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  name        String
+  description String?   @db.Text
+  startDate   DateTime?
+  endDate     DateTime?
+  results     String?   @db.Text
+  links       String[]
+  createdAt   DateTime  @default(now())
+}
+
+model Document {
+  id        String             @id @default(cuid())
+  profileId String
+  profile   Profile            @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  type      String
+  fileUrl   String
+  status    VerificationStatus @default(PENDING)
+  createdAt DateTime           @default(now())
+}
+
+model Like {
+  id         String   @id @default(cuid())
+  fromUserId String
+  toUserId   String
+  fromUser   User     @relation("SentLikes", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUser     User     @relation("ReceivedLikes", fields: [toUserId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([fromUserId, toUserId])
+}
+
+model Partnership {
+  id        String            @id @default(cuid())
+  userAId   String
+  userBId   String
+  userA     User              @relation("UserA", fields: [userAId], references: [id], onDelete: Cascade)
+  userB     User              @relation("UserB", fields: [userBId], references: [id], onDelete: Cascade)
+  status    PartnershipStatus @default(MATCHED)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  proposals  Proposal[]
+  milestones Milestone[]
+
+  @@unique([userAId, userBId])
+}
+
+model Proposal {
+  id             String         @id @default(cuid())
+  partnershipId  String
+  partnership    Partnership    @relation(fields: [partnershipId], references: [id], onDelete: Cascade)
+  fromUserId     String
+  toUserId       String
+  fromUser       User           @relation("SentProposals", fields: [fromUserId], references: [id])
+  toUser         User           @relation("ReceivedProposals", fields: [toUserId], references: [id])
+  equityPercent  Float?
+  role           String?
+  investmentType String?
+  message        String?        @db.Text
+  status         ProposalStatus @default(SENT)
+  viewedAt       DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model Milestone {
+  id            String      @id @default(cuid())
+  partnershipId String
+  partnership   Partnership @relation(fields: [partnershipId], references: [id], onDelete: Cascade)
+  title         String
+  completed     Boolean     @default(false)
+  completedAt   DateTime?
+  order         Int         @default(0)
+  createdAt     DateTime    @default(now())
+}

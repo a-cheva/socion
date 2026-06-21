@@ -1,36 +1,153 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SocioN
 
-## Getting Started
+> Plataforma de formação de sociedades com validação de competências, reputação e confiabilidade.
 
-First, run the development server:
+**Stack:** Next.js 14 · TypeScript · Tailwind CSS v4 · Prisma 7 · Auth.js v5 · Stripe · shadcn/ui · Storybook · Airbnb Design System
+
+---
+
+## 🚀 Setup Local
 
 ```bash
+npm install
+cp .env.example .env
+# preencha o .env com suas credenciais
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🎨 Storybook
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run storybook
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Acesse: http://localhost:6006
 
-## Learn More
+### Design System (Airbnb-inspired tokens)
 
-To learn more about Next.js, take a look at the following resources:
+| Grupo | Arquivo |
+|---|---|
+| Tokens (cores, tipografia, espaçamento, radius, shadow) | `components/ds/tokens.ts` |
+| TrustScoreBadge | `components/ds/trust-score-badge.tsx` |
+| ProfileCard | `components/ds/profile-card.tsx` |
+| SearchBar | `components/ds/search-bar.tsx` |
+| PartnershipTimeline | `components/ds/partnership-timeline.tsx` |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## ☁️ Deploy (GitHub + Vercel)
 
-## Deploy on Vercel
+### 1. Criar repositório GitHub
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Instale o GitHub CLI: https://cli.github.com
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+gh auth login
+gh repo create lbrezende/socion --public
+git remote add origin https://github.com/lbrezende/socion.git
+git push -u origin main
+```
+
+### 2. Deploy Vercel
+
+```bash
+npm i -g vercel
+vercel login
+vercel --prod --name socion
+```
+
+URL final: https://socion.vercel.app
+
+### 3. Variáveis de Ambiente no Vercel
+
+Copie todas as variáveis do `.env.example` para:
+**Vercel Dashboard → Settings → Environment Variables**
+
+---
+
+## 🗄️ Banco de Dados (Neon)
+
+1. Crie conta em https://neon.tech
+2. Crie um projeto e copie a `DATABASE_URL`
+3. Adicione no `prisma.config.ts` e `.env`
+4. Execute:
+
+```bash
+npx prisma migrate dev --name init
+```
+
+---
+
+## 🔑 Credenciais Necessárias
+
+| Serviço | Link |
+|---|---|
+| Google OAuth | https://console.cloud.google.com |
+| LinkedIn OAuth | https://developer.linkedin.com |
+| Resend | https://resend.com |
+| Stripe | https://dashboard.stripe.com |
+| Neon PostgreSQL | https://neon.tech |
+
+---
+
+## 📐 Arquitetura
+
+```
+app/
+  page.tsx              → Landing page
+  login/                → Login com LinkedIn + Google
+  onboarding/           → Configuração de perfil (2 passos)
+  feed/                 → Feed de pitches (estilo TikTok)
+  profile/[userId]/     → Perfil completo + Trust Score
+  dashboard/            → Sala da sociedade, matches
+  settings/billing/     → Plano e cobrança
+  api/
+    auth/               → Auth.js handlers
+    likes/              → Match engine (like bilateral)
+    onboarding/         → Salvar preferências
+    stripe/checkout/    → Criar sessão de pagamento
+    stripe/webhook/     → Processar eventos Stripe
+components/
+  ds/                   → Design system (tokens + componentes)
+  feed/                 → Feed client component
+  billing/              → Checkout button
+  providers.tsx         → QueryClient + SessionProvider
+lib/
+  auth.ts               → Auth.js config (LinkedIn, Google, Resend)
+  prisma.ts             → Prisma singleton
+  stripe.ts             → Stripe lazy init
+  plans.ts              → PLAN_LIMITS, isTrialActive, hasAccess
+  trust-score.ts        → Trust Score engine
+prisma/
+  schema.prisma         → Schema completo
+stories/
+  DesignTokens.stories.tsx
+  TrustScoreBadge.stories.tsx
+  ProfileCard.stories.tsx
+  SearchBar.stories.tsx
+  PartnershipTimeline.stories.tsx
+```
+
+---
+
+## Trust Engine
+
+Trust Score (0–100) — 5 dimensões com peso igual de 20%:
+
+| Dimensão | Fonte |
+|---|---|
+| Identidade | KYC via Persona / Onfido |
+| Experiência | LinkedIn OAuth |
+| Competência | Skills + evidências |
+| Reputação | Rede de conexões |
+| Comprometimento | Comportamento na plataforma |
+
+---
+
+## Planos
+
+| Plano | Likes | Propostas | Período |
+|---|---|---|---|
+| TRIAL | 10 | 2 | 14 dias grátis |
+| FREE | 5 | 1 | — |
+| PRO | ∞ | ∞ | Mensal (Stripe) |
