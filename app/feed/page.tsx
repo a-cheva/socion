@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic"
 
 import { prisma } from "@/lib/prisma"
 import Link from "next/link"
+import { FeedCard } from "./FeedCard"
 
 export default async function FeedPage() {
   let profiles: any[] = []
@@ -22,68 +23,41 @@ export default async function FeedPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-8">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-lg">
-          <h2 className="text-red-700 font-bold mb-2">Erro ao carregar perfis</h2>
-          <pre className="text-xs text-red-600 whitespace-pre-wrap">{error}</pre>
+      <div className="min-h-screen flex items-center justify-center p-8 bg-[#0a0f0d]">
+        <div className="bg-[#1a0a0a] border border-red-900 rounded-lg p-6 max-w-lg">
+          <h2 className="text-red-400 font-bold mb-2">Erro ao carregar perfis</h2>
+          <pre className="text-xs text-red-500 whitespace-pre-wrap">{error}</pre>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b px-6 py-4 flex items-center justify-between">
-        <Link href="/" className="text-2xl font-bold text-[#ff385c]">SocioN</Link>
+    <div className="min-h-screen bg-[#0a0f0d]">
+      <header className="bg-[#0d1310] border-b border-[#1e2e26] px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+        <Link href="/" className="text-xl font-bold text-[#00a86b]">SocioN</Link>
+        <nav className="flex items-center gap-1">
+          <Link href="/feed" className="px-3 py-1.5 text-sm text-white bg-[#1e2e26] rounded-lg">Feed</Link>
+          <Link href="/matches" className="px-3 py-1.5 text-sm text-[#8a9e94] hover:text-white rounded-lg transition-colors">Matches</Link>
+          <Link href="/dashboard" className="px-3 py-1.5 text-sm text-[#8a9e94] hover:text-white rounded-lg transition-colors">Dashboard</Link>
+        </nav>
       </header>
 
-      <div className="max-w-2xl mx-auto py-8 px-4">
-        <h1 className="text-2xl font-bold mb-6 text-gray-900">Feed de Sócios ({profiles.length})</h1>
+      <div className="max-w-xl mx-auto py-8 px-4">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-xl font-bold text-white">
+            Feed de Sócios{" "}
+            <span className="text-[#4a5e54] font-normal text-base">({profiles.length})</span>
+          </h1>
+        </div>
 
         {profiles.length === 0 && (
-          <p className="text-gray-500 text-center py-12">Nenhum perfil encontrado.</p>
+          <p className="text-[#4a5e54] text-center py-12">Nenhum perfil encontrado.</p>
         )}
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
           {profiles.map((profile) => (
-            <div key={profile.id} className="bg-white rounded-xl border p-5 shadow-sm">
-              <div className="flex items-center gap-3 mb-3">
-                {profile.user.image && (
-                  <img
-                    src={profile.user.image}
-                    alt={profile.user.name ?? ""}
-                    className="w-12 h-12 rounded-full object-cover"
-                  />
-                )}
-                <div>
-                  <div className="font-semibold text-gray-900">{profile.user.name}</div>
-                  {profile.headline && (
-                    <div className="text-sm text-gray-500">{profile.headline}</div>
-                  )}
-                  {profile.location && (
-                    <div className="text-xs text-gray-400">{profile.location}</div>
-                  )}
-                </div>
-                {profile.trustScore && (
-                  <span className="ml-auto text-sm font-bold text-[#ff385c] bg-red-50 px-2 py-1 rounded-full">
-                    ★ {profile.trustScore}
-                  </span>
-                )}
-              </div>
-
-              {profile.bio && (
-                <p className="text-sm text-gray-700 line-clamp-3">{profile.bio}</p>
-              )}
-
-              <div className="mt-3 flex gap-2">
-                <Link
-                  href={`/profile/${profile.user.id}`}
-                  className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-full text-gray-700"
-                >
-                  Ver perfil →
-                </Link>
-              </div>
-            </div>
+            <FeedCard key={profile.id} profile={profile} />
           ))}
         </div>
       </div>
