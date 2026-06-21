@@ -1,345 +1,203 @@
-﻿export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic"
 
 import { getAdminMetrics } from "@/lib/admin-metrics"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Progress } from "@/components/ui/progress"
-import {
-  TrendingUp,
-  Users,
-  Handshake,
-  Star,
-  FileCheck,
-  Heart,
-  ShieldCheck,
-  Clock,
-} from "lucide-react"
+import Link from "next/link"
 
-export default async function AdminOverviewPage() {
-  const m = await getAdminMetrics()
-
+function Stat({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
   return (
-    <div className="p-8 flex flex-col gap-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-display-md text-[var(--color-ink)]">Dashboard Admin</h1>
-        <p className="text-body-sm text-[var(--color-muted-text)] mt-1">
-          Métricas em tempo real do SocioN
-        </p>
-      </div>
-
-      {/* North Star */}
-      <section>
-        <p className="text-caption text-[var(--color-muted-text)] uppercase tracking-wider mb-3">
-          ⭐ North Star Metric
-        </p>
-        <Card className="border-[var(--color-rausch)] bg-gradient-to-br from-white to-rose-50">
-          <CardContent className="p-6 flex items-center gap-6">
-            <div className="w-16 h-16 rounded-full bg-[var(--color-rausch)] flex items-center justify-center shrink-0">
-              <FileCheck className="w-8 h-8 text-white" />
-            </div>
-            <div>
-              <p className="text-caption text-[var(--color-muted-text)]">
-                Sociedades iniciadas com contrato assinado
-              </p>
-              <p className="text-rating font-bold text-[var(--color-rausch)] leading-none mt-1">
-                {m.signedContracts}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      </section>
-
-      {/* KPIs Grid */}
-      <section>
-        <p className="text-caption text-[var(--color-muted-text)] uppercase tracking-wider mb-3">
-          KPIs de Aquisição
-        </p>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <MetricCard
-            icon={<Users className="w-5 h-5" />}
-            label="Total de Usuários"
-            value={m.totalUsers}
-            sub={`+${m.newUsersLast30d} últimos 30d`}
-          />
-          <MetricCard
-            icon={<ShieldCheck className="w-5 h-5" />}
-            label="Perfis Verificados"
-            value={m.verifiedUsers}
-            sub={`${m.verifiedRate}% do total`}
-          />
-          <MetricCard
-            icon={<Clock className="w-5 h-5" />}
-            label="KYC Pendente"
-            value={m.pendingKyc}
-            sub="aguardando revisão"
-            highlight={m.pendingKyc > 0}
-          />
-          <MetricCard
-            icon={<Star className="w-5 h-5" />}
-            label="Trust Score Médio"
-            value={m.avgTrustScore}
-            sub="plataforma toda"
-          />
-        </div>
-      </section>
-
-      <section>
-        <p className="text-caption text-[var(--color-muted-text)] uppercase tracking-wider mb-3">
-          KPIs de Match
-        </p>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <MetricCard
-            icon={<Heart className="w-5 h-5" />}
-            label="Total de Likes"
-            value={m.totalLikes}
-            sub="interesses demonstrados"
-          />
-          <MetricCard
-            icon={<Handshake className="w-5 h-5" />}
-            label="Matches"
-            value={m.totalMatches}
-            sub={`${m.matchRate}% taxa de match`}
-          />
-          <MetricCard
-            icon={<TrendingUp className="w-5 h-5" />}
-            label="Propostas Enviadas"
-            value={m.totalProposals}
-            sub={`${m.proposalAcceptRate}% aceitas`}
-          />
-          <MetricCard
-            icon={<FileCheck className="w-5 h-5" />}
-            label="Sociedades Ativas"
-            value={m.activePartnerships}
-            sub="em andamento"
-          />
-        </div>
-      </section>
-
-      {/* Planos */}
-      <section>
-        <p className="text-caption text-[var(--color-muted-text)] uppercase tracking-wider mb-3">
-          Distribuição de Planos
-        </p>
-        <Card className="border-[var(--color-hairline)]">
-          <CardContent className="p-6 flex flex-col gap-4">
-            {m.planBreakdown.map((p) => {
-              const pct = m.totalUsers > 0 ? (p._count._all / m.totalUsers) * 100 : 0
-              const colors: Record<string, string> = {
-                PRO: "bg-[var(--color-rausch)]",
-                TRIAL: "bg-blue-500",
-                FREE: "bg-[var(--color-hairline)]",
-                ENTERPRISE: "bg-[var(--color-luxe)]",
-              }
-              return (
-                <div key={p.plan} className="flex items-center gap-4">
-                  <span className="text-caption text-[var(--color-ink)] w-24 shrink-0">{p.plan}</span>
-                  <div className="flex-1 bg-[var(--color-surface-strong)] rounded-full h-2 overflow-hidden">
-                    <div
-                      className={`h-2 rounded-full ${colors[p.plan] ?? "bg-gray-400"}`}
-                      style={{ width: `${pct}%` }}
-                    />
-                  </div>
-                  <span className="text-caption font-semibold text-[var(--color-ink)] w-10 text-right">
-                    {p._count._all}
-                  </span>
-                  <span className="text-caption-sm text-[var(--color-muted-text)] w-10 text-right">
-                    {pct.toFixed(0)}%
-                  </span>
-                </div>
-              )
-            })}
-          </CardContent>
-        </Card>
-      </section>
-
-      {/* Últimos 7 dias */}
-      {m.dailySignups.length > 0 && (
-        <section>
-          <p className="text-caption text-[var(--color-muted-text)] uppercase tracking-wider mb-3">
-            Cadastros — Últimos 7 dias
-          </p>
-          <Card className="border-[var(--color-hairline)]">
-            <CardContent className="p-6">
-              <div className="flex items-end gap-3 h-24">
-                {m.dailySignups.map((d) => {
-                  const max = Math.max(...m.dailySignups.map((x) => x.count), 1)
-                  const h = (d.count / max) * 100
-                  return (
-                    <div key={d.date} className="flex-1 flex flex-col items-center gap-1">
-                      <span className="text-micro-label text-[var(--color-muted-text)]">{d.count}</span>
-                      <div
-                        className="w-full bg-[var(--color-rausch)] rounded-t-sm"
-                        style={{ height: `${h}%`, minHeight: "4px" }}
-                      />
-                      <span className="text-micro-label text-[var(--color-muted-soft)]">
-                        {new Date(d.date).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })}
-                      </span>
-                    </div>
-                  )
-                })}
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-      )}
-
-      {/* Tabelas lado a lado */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Usuários recentes */}
-        <Card className="border-[var(--color-hairline)]">
-          <CardHeader>
-            <CardTitle className="text-title-md text-[var(--color-ink)]">Usuários Recentes</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <table className="w-full text-body-sm">
-              <thead>
-                <tr className="border-b border-[var(--color-hairline-soft)]">
-                  <th className="text-left px-4 py-2 text-caption text-[var(--color-muted-text)]">Usuário</th>
-                  <th className="text-left px-4 py-2 text-caption text-[var(--color-muted-text)]">Trust</th>
-                  <th className="text-left px-4 py-2 text-caption text-[var(--color-muted-text)]">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {m.recentUsers.map((u) => (
-                  <tr key={u.id} className="border-b border-[var(--color-hairline-soft)] last:border-0 hover:bg-[var(--color-surface-soft)]">
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        <Avatar className="h-7 w-7">
-                          <AvatarFallback className="text-micro-label bg-[var(--color-surface-strong)]">
-                            {u.name?.[0] ?? "?"}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="text-caption font-medium text-[var(--color-ink)] leading-tight">{u.name ?? "—"}</p>
-                          <p className="text-caption-sm text-[var(--color-muted-text)]">{u.email}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-caption font-semibold text-[var(--color-ink)]">
-                      {u.profile?.trustScore ?? "—"}
-                    </td>
-                    <td className="px-4 py-3">
-                      <StatusBadge status={u.profile?.verificationStatus ?? "PENDING"} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </CardContent>
-        </Card>
-
-        {/* Sociedades recentes */}
-        <Card className="border-[var(--color-hairline)]">
-          <CardHeader>
-            <CardTitle className="text-title-md text-[var(--color-ink)]">Sociedades Recentes</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <table className="w-full text-body-sm">
-              <thead>
-                <tr className="border-b border-[var(--color-hairline-soft)]">
-                  <th className="text-left px-4 py-2 text-caption text-[var(--color-muted-text)]">Parceiros</th>
-                  <th className="text-left px-4 py-2 text-caption text-[var(--color-muted-text)]">Status</th>
-                  <th className="text-left px-4 py-2 text-caption text-[var(--color-muted-text)]">Progresso</th>
-                </tr>
-              </thead>
-              <tbody>
-                {m.recentPartnerships.map((p) => {
-                  const completed = p.milestones.filter((m) => m.completed).length
-                  const total = p.milestones.length
-                  return (
-                    <tr key={p.id} className="border-b border-[var(--color-hairline-soft)] last:border-0 hover:bg-[var(--color-surface-soft)]">
-                      <td className="px-4 py-3">
-                        <p className="text-caption font-medium text-[var(--color-ink)] leading-tight">
-                          {p.userA?.name ?? "—"}
-                        </p>
-                        <p className="text-caption-sm text-[var(--color-muted-text)]">
-                          + {p.userB?.name ?? "—"}
-                        </p>
-                      </td>
-                      <td className="px-4 py-3">
-                        <PartnershipBadge status={p.status} />
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <Progress
-                            value={total > 0 ? (completed / total) * 100 : 0}
-                            className="h-1.5 flex-1 bg-[var(--color-hairline-soft)]"
-                          />
-                          <span className="text-micro-label text-[var(--color-muted-text)] shrink-0">
-                            {completed}/{total}
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </CardContent>
-        </Card>
-      </div>
+    <div className="bg-[#111] border border-[#222] rounded-xl p-5">
+      <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">{label}</p>
+      <p className="text-3xl font-bold text-white">{value}</p>
+      {sub && <p className="text-xs text-gray-500 mt-1">{sub}</p>}
     </div>
   )
 }
 
-function MetricCard({
-  icon,
-  label,
-  value,
-  sub,
-  highlight = false,
-}: {
-  icon: React.ReactNode
-  label: string
-  value: number | string
-  sub?: string
-  highlight?: boolean
-}) {
-  return (
-    <Card
-      className={`border-[var(--color-hairline)] ${highlight ? "border-amber-300 bg-amber-50" : ""}`}
-    >
-      <CardContent className="p-5">
-        <div className="flex items-center gap-2 text-[var(--color-muted-text)] mb-3">
-          {icon}
-          <span className="text-caption">{label}</span>
+function Section({ title }: { title: string }) {
+  return <p className="text-xs text-gray-500 uppercase tracking-widest mt-6 mb-3">{title}</p>
+}
+
+export default async function AdminPage() {
+  let m: any = null
+  let error: string | null = null
+  try {
+    m = await getAdminMetrics()
+  } catch (e: any) {
+    error = e?.message ?? "Erro ao carregar métricas"
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center p-8">
+        <div className="bg-[#1a0a0a] border border-red-900 rounded-lg p-6 max-w-lg">
+          <h2 className="text-red-400 font-bold mb-2">Erro ao carregar métricas</h2>
+          <pre className="text-xs text-red-500 whitespace-pre-wrap">{error}</pre>
         </div>
-        <p className="text-display-md font-bold text-[var(--color-ink)]">{value}</p>
-        {sub && <p className="text-caption-sm text-[var(--color-muted-text)] mt-1">{sub}</p>}
-      </CardContent>
-    </Card>
-  )
-}
-
-function StatusBadge({ status }: { status: string }) {
-  const map: Record<string, { label: string; cls: string }> = {
-    VERIFIED:  { label: "Verificado", cls: "bg-green-100 text-green-700" },
-    PENDING:   { label: "Pendente",   cls: "bg-amber-100 text-amber-700" },
-    REJECTED:  { label: "Reprovado",  cls: "bg-red-100 text-red-700" },
+      </div>
+    )
   }
-  const { label, cls } = map[status] ?? { label: status, cls: "bg-gray-100 text-gray-600" }
-  return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-badge font-semibold ${cls}`}>
-      {label}
-    </span>
-  )
-}
 
-function PartnershipBadge({ status }: { status: string }) {
-  const map: Record<string, { label: string; cls: string }> = {
-    MATCHED:              { label: "Match",           cls: "bg-blue-100 text-blue-700" },
-    PROPOSAL_SENT:        { label: "Proposta",        cls: "bg-purple-100 text-purple-700" },
-    CONTRACT_IN_PROGRESS: { label: "Contrato",        cls: "bg-amber-100 text-amber-700" },
-    CONTRACT_SIGNED:      { label: "Assinado ✓",     cls: "bg-green-100 text-green-700" },
-    ACTIVE:               { label: "Ativa",           cls: "bg-emerald-100 text-emerald-700" },
-    DISSOLVED:            { label: "Dissolvida",      cls: "bg-gray-100 text-gray-600" },
-  }
-  const { label, cls } = map[status] ?? { label: status, cls: "bg-gray-100 text-gray-600" }
+  // Funil de conversão
+  const total = m.totalUsers || 1
+  const funnel = [
+    { label: "Cadastros", value: m.totalUsers, pct: 100 },
+    { label: "Perfis verificados", value: m.verifiedUsers, pct: Math.round((m.verifiedUsers / total) * 100) },
+    { label: "Em match", value: m.totalMatches, pct: Math.round((m.totalMatches / total) * 100) },
+    { label: "Propostas", value: m.totalProposals, pct: Math.round((m.totalProposals / total) * 100) },
+    { label: "Contratos assinados", value: m.signedContracts, pct: Math.round((m.signedContracts / total) * 100) },
+  ]
+
+  // HEART
+  const proposalAcceptPct = m.totalProposals > 0
+    ? Math.round((m.acceptedProposals / m.totalProposals) * 100)
+    : 0
+  const matchToSociety = m.totalMatches > 0
+    ? Math.round((m.signedContracts / m.totalMatches) * 100)
+    : 0
+
+  const planMap = Object.fromEntries(
+    (m.planBreakdown ?? []).map((p: any) => [p.plan, p._count._all])
+  )
+
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-badge font-semibold ${cls}`}>
-      {label}
-    </span>
+    <div className="min-h-screen bg-black text-white">
+      <header className="flex items-center justify-between px-8 py-4 border-b border-[#222]">
+        <div className="flex items-center gap-3">
+          <span className="font-bold text-lg">SocioN</span>
+          <span className="text-xs bg-[#222] px-2 py-0.5 rounded text-gray-400">ADMIN</span>
+        </div>
+        <div className="flex items-center gap-4">
+          <Link href="/" className="text-sm text-gray-400 hover:text-white transition-colors">Ver site</Link>
+          <Link href="/api/auth/signout" className="text-sm text-gray-400 hover:text-white transition-colors">→ Sair</Link>
+        </div>
+      </header>
+
+      <div className="max-w-5xl mx-auto px-8 py-10">
+        <h1 className="text-4xl font-bold mb-1">Métricas de negócio</h1>
+        <p className="text-gray-500 mb-8">Visão agregada de toda a atividade da plataforma.</p>
+
+        {/* North Star + Funil */}
+        <div className="grid grid-cols-2 gap-5 mb-8">
+          {/* North Star */}
+          <div className="bg-[#c8f5d0] rounded-2xl p-8 flex flex-col justify-between min-h-[280px]">
+            <p className="text-xs font-semibold text-green-800 uppercase tracking-widest flex items-center gap-1">
+              ↗ North Star Metric
+            </p>
+            <div>
+              <p className="text-8xl font-bold text-black leading-none">{m.signedContracts}</p>
+              <p className="text-gray-700 mt-3 text-sm">Sociedades com contrato assinado</p>
+            </div>
+          </div>
+
+          {/* Funil */}
+          <div className="bg-[#111] border border-[#222] rounded-2xl p-6">
+            <p className="text-xs text-gray-500 uppercase tracking-widest mb-5">Funil de Conversão</p>
+            <div className="flex gap-4 h-44">
+              {/* Bars */}
+              <div className="flex-1 flex flex-col justify-end gap-1.5">
+                {funnel.map((step, i) => (
+                  <div key={step.label} className="flex items-center gap-2">
+                    <div
+                      className="h-6 rounded transition-all"
+                      style={{
+                        width: `${step.pct}%`,
+                        background: `rgba(0,200,100,${1 - i * 0.15})`,
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+              {/* Labels */}
+              <div className="flex flex-col justify-end gap-1.5 shrink-0">
+                {funnel.map((step) => (
+                  <div key={step.label} className="h-6 flex flex-col justify-center">
+                    <span className="text-xs font-bold text-white leading-none">{step.value}</span>
+                    <span className="text-[10px] text-[#00c864] leading-none">{step.label}</span>
+                    <span className="text-[10px] text-gray-500 leading-none">{step.pct}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Aquisição */}
+        <Section title="Aquisição" />
+        <div className="grid grid-cols-2 gap-4">
+          <Stat label="Cadastros" value={m.totalUsers} />
+          <Stat label="Perfis verificados" value={m.verifiedUsers} />
+        </div>
+
+        {/* Confiança */}
+        <Section title="Confiança" />
+        <div className="grid grid-cols-2 gap-4">
+          <Stat label="% perfis verificados" value={`${m.verifiedRate}%`} sub="Verificados / cadastros" />
+          <Stat label="Trust Score médio" value={m.avgTrustScore} sub="de 0 a 100" />
+        </div>
+
+        {/* Match */}
+        <Section title="Match" />
+        <div className="grid grid-cols-3 gap-4">
+          <Stat label="Likes" value={m.totalLikes} />
+          <Stat label="Matches" value={m.totalMatches} />
+          <Stat label="Propostas" value={m.totalProposals} />
+        </div>
+
+        {/* Sociedade */}
+        <Section title="Sociedade" />
+        <div className="grid grid-cols-2 gap-4">
+          <Stat label="Contratos enviados" value={m.totalProposals} />
+          <div className="bg-[#c8f5d0] border border-[#222] rounded-xl p-5">
+            <p className="text-xs text-green-800 uppercase tracking-wide mb-1">Contratos assinados</p>
+            <p className="text-3xl font-bold text-black">{m.signedContracts}</p>
+          </div>
+        </div>
+
+        {/* Retenção */}
+        <Section title="Retenção" />
+        <div className="grid grid-cols-2 gap-4">
+          <Stat label="Ativos após match" value={m.activePartnerships} sub={`${m.totalMatches > 0 ? Math.round((m.activePartnerships / m.totalMatches) * 100) : 0}% dos ${m.totalMatches} em match`} />
+          <Stat label="Sociedades acompanhadas" value={m.activePartnerships} />
+        </div>
+
+        {/* HEART */}
+        <div className="mt-10 pt-8 border-t border-[#222]">
+          <p className="text-xs text-gray-500 uppercase tracking-widest mb-1">Framework HEART · Google</p>
+          <h2 className="text-3xl font-bold mb-1">Experiência do usuário</h2>
+          <p className="text-gray-500 text-sm mb-8">Happiness, Engagement, Adoption, Retention e Task Success aplicados às features do SocioN.</p>
+
+          <Section title="Happiness · Satisfação" />
+          <div className="grid grid-cols-2 gap-4">
+            <Stat
+              label="Taxa de aceitação de propostas"
+              value={`${proposalAcceptPct}%`}
+              sub={`${m.acceptedProposals} de ${m.totalProposals} propostas`}
+            />
+            <div className="bg-[#111] border border-[#222] rounded-xl p-5">
+              <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Match → sociedade</p>
+              <p className="text-3xl font-bold text-white">{matchToSociety}%</p>
+              <div className="mt-3 bg-[#222] rounded-full h-2">
+                <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${matchToSociety}%` }} />
+              </div>
+            </div>
+          </div>
+
+          <Section title="Engagement · Engajamento" />
+          <div className="grid grid-cols-4 gap-4">
+            <Stat label="Likes no feed" value={m.totalLikes} />
+            <Stat label="Favoritos" value={m.totalMatches} />
+            <Stat label="Usuários ativos" value={m.totalUsers} sub="curtiram, favoritaram ou propuseram" />
+            <Stat label="Likes / usuário ativo" value={m.totalUsers > 0 ? Math.round(m.totalLikes / m.totalUsers) : 0} />
+          </div>
+
+          <Section title="Adoption · Planos" />
+          <div className="grid grid-cols-4 gap-4">
+            {["TRIAL", "FREE", "PRO", "ENTERPRISE"].map((p) => (
+              <Stat key={p} label={p} value={planMap[p] ?? 0} />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
