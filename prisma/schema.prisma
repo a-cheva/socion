@@ -4,6 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 enum Plan {
@@ -66,7 +67,6 @@ enum PartnershipStatus {
   DISSOLVED
 }
 
-// Auth.js v5 tables
 model Account {
   id                String  @id @default(cuid())
   userId            String
