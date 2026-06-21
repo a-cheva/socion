@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma"
 import { safeAuth as auth } from "@/lib/auth-safe"
 import { redirect, notFound } from "next/navigation"
 import Link from "next/link"
+import { DissolveButton } from "./DissolveButton"
 
 const MILESTONE_ICONS: Record<number, string> = {
   1: "✦",
@@ -136,6 +137,9 @@ export default async function PartnershipPage({ params }: { params: Promise<{ id
             >
               Enviar proposta
             </Link>
+          </div>
+          <div className="mt-4 pt-4 border-t border-[#1e2e26] flex justify-end">
+            <DissolveButton partnershipId={p.id} />
           </div>
         </div>
 

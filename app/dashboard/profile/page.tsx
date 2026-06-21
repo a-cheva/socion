@@ -13,7 +13,12 @@ export default async function MyProfilePage() {
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
     include: {
-      profile: { include: { skills: { orderBy: { createdAt: "asc" } } } },
+      profile: {
+        include: {
+          skills: { orderBy: { createdAt: "asc" } },
+          documents: { orderBy: { createdAt: "desc" } },
+        },
+      },
     },
   })
 
@@ -57,12 +62,20 @@ export default async function MyProfilePage() {
             location: p?.location ?? "",
             weeklyHours: p?.weeklyHours ?? 40,
             trustScore: p?.trustScore ?? null,
+            verificationStatus: p?.verificationStatus ?? "PENDING",
             skills: (p?.skills ?? []).map((s) => ({
               id: s.id,
               name: s.name,
               evidence: s.evidence,
               verified: s.verified,
               source: s.source,
+            })),
+            documents: (p?.documents ?? []).map((doc) => ({
+              id: doc.id,
+              type: doc.type,
+              fileName: doc.fileName,
+              status: doc.status,
+              rejectionReason: doc.rejectionReason,
             })),
           }}
         />

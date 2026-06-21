@@ -16,11 +16,19 @@ export function ApproveKycButton({
   const router = useRouter()
 
   async function handleClick() {
+    let rejectionReason: string | undefined
+    if (action === "REJECTED") {
+      const reason = window.prompt(
+        "Motivo da rejeição (ex: documento ilegível, expirado, cortado, de outro país):"
+      )
+      if (!reason) return
+      rejectionReason = reason
+    }
     setLoading(true)
     const res = await fetch("/api/admin/kyc", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ profileId, status: action }),
+      body: JSON.stringify({ profileId, status: action, rejectionReason }),
     })
     if (res.ok) {
       toast.success(action === "VERIFIED" ? "KYC aprovado!" : "KYC reprovado.")

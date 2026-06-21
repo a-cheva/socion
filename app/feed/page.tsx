@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic"
 
 import { prisma } from "@/lib/prisma"
+import { safeAuth as auth } from "@/lib/auth-safe"
 import Link from "next/link"
 import { FeedCard } from "./FeedCard"
 
@@ -9,8 +10,23 @@ export default async function FeedPage() {
   let error = null
 
   try {
+    const session = await auth()
+
+    // Perfis que o usuário denunciou ficam ocultos do seu feed
+    let reportedIds: string[] = []
+    if (session?.user?.id) {
+      const reports = await prisma.report.findMany({
+        where: { reporterUserId: session.user.id },
+        select: { reportedUserId: true },
+      })
+      reportedIds = reports.map((r) => r.reportedUserId)
+    }
+
     profiles = await prisma.profile.findMany({
-      where: { verificationStatus: { not: "REJECTED" } },
+      where: {
+        verificationStatus: { not: "REJECTED" },
+        ...(reportedIds.length > 0 ? { userId: { notIn: reportedIds } } : {}),
+      },
       include: {
         user: { select: { id: true, name: true, image: true } },
       },
