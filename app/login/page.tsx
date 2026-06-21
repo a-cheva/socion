@@ -1,4 +1,5 @@
 import { signIn } from "@/lib/auth"
+import { redirect } from "next/navigation"
 import { Button } from "@/components/ui/button"
 
 const benefits = [
@@ -133,7 +134,8 @@ export default function LoginPage() {
           <form
             action={async () => {
               "use server"
-              await signIn("credentials", { redirectTo: "/feed" })
+              await signIn("credentials", { redirect: false })
+              redirect("/feed")
             }}
           >
             <button
