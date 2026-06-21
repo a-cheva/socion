@@ -362,6 +362,14 @@ const enrichment: Record<string, {
   },
 }
 
+// Vídeos de apresentação (pitch). Exemplos públicos estáveis — troque pelos vídeos reais depois.
+const pitchVideos: Record<string, string> = {
+  "rafael.mendonca@fake.socion.app": "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+  "camila.torres@fake.socion.app": "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
+  "diego.carvalho@fake.socion.app": "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+  "lucas.yamamoto@fake.socion.app": "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+}
+
 async function main() {
   console.log("🌱 Seeding fake profiles...")
 
@@ -387,6 +395,7 @@ async function main() {
     const profileData = {
       ...u.profile,
       ...(ext ? { compatibilityScore: ext.compatibilityScore, values: ext.values } : {}),
+      ...(pitchVideos[u.email] ? { pitchVideoUrl: pitchVideos[u.email] } : {}),
     }
 
     const profile = await prisma.profile.upsert({
