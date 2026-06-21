@@ -1,4 +1,4 @@
-import { signIn } from "@/lib/auth"
+﻿import { signIn } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { ShieldCheck } from "lucide-react"
@@ -34,3 +34,4 @@ export default function AdminLoginPage() {
     </div>
   )
 }
+

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma"
-import { auth } from "@/lib/auth"
+import { safeAuth as auth } from "@/lib/auth-safe"
 import { notFound } from "next/navigation"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"

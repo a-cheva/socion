@@ -1,4 +1,6 @@
-import { auth } from "@/lib/auth"
+﻿export const dynamic = "force-dynamic"
+
+import { safeAuth as auth } from "@/lib/auth-safe"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -38,7 +40,7 @@ export default async function DashboardPage() {
         <Link href="/" className="text-2xl font-bold text-indigo-600">SocioN</Link>
         <div className="flex gap-2">
           <Link href="/feed"><Button variant="ghost" size="sm">Feed</Button></Link>
-          <Link href="/settings"><Button variant="ghost" size="sm">Configurações</Button></Link>
+          <Link href="/settings"><Button variant="ghost" size="sm">ConfiguraÃ§Ãµes</Button></Link>
         </div>
       </header>
 
@@ -48,9 +50,9 @@ export default async function DashboardPage() {
           <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4 flex items-center justify-between">
             <div>
               <p className="font-medium text-indigo-800">
-                Período de teste — {days} dia{days !== 1 ? "s" : ""} restante{days !== 1 ? "s" : ""}
+                PerÃ­odo de teste â€” {days} dia{days !== 1 ? "s" : ""} restante{days !== 1 ? "s" : ""}
               </p>
-              <p className="text-sm text-indigo-600">Faça upgrade para acesso ilimitado.</p>
+              <p className="text-sm text-indigo-600">FaÃ§a upgrade para acesso ilimitado.</p>
             </div>
             <Link href="/settings/billing">
               <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white">
@@ -66,7 +68,7 @@ export default async function DashboardPage() {
             <CardHeader><CardTitle className="text-sm text-gray-500">Trust Score</CardTitle></CardHeader>
             <CardContent>
               <span className="text-3xl font-bold text-indigo-600">
-                {user.profile?.trustScore ?? "—"}
+                {user.profile?.trustScore ?? "â€”"}
               </span>
             </CardContent>
           </Card>
@@ -80,7 +82,7 @@ export default async function DashboardPage() {
             <CardHeader><CardTitle className="text-sm text-gray-500">Status</CardTitle></CardHeader>
             <CardContent>
               <Badge variant={user.profile?.verificationStatus === "VERIFIED" ? "default" : "secondary"}>
-                {user.profile?.verificationStatus === "VERIFIED" ? "✓ Verificado" : "Em verificação"}
+                {user.profile?.verificationStatus === "VERIFIED" ? "âœ“ Verificado" : "Em verificaÃ§Ã£o"}
               </Badge>
             </CardContent>
           </Card>
@@ -131,3 +133,4 @@ export default async function DashboardPage() {
     </div>
   )
 }
+

@@ -63,10 +63,10 @@ export async function getAdminMetrics() {
 
     // Cadastros por dia (últimos 7 dias)
     prisma.$queryRaw<{ date: string; count: bigint }[]>`
-      SELECT DATE(created_at)::text as date, COUNT(*)::bigint as count
+      SELECT DATE("createdAt")::text as date, COUNT(*)::bigint as count
       FROM "User"
-      WHERE created_at >= ${sevenDaysAgo}
-      GROUP BY DATE(created_at)
+      WHERE "createdAt" >= ${sevenDaysAgo}
+      GROUP BY DATE("createdAt")
       ORDER BY date ASC
     `,
 

@@ -1,4 +1,6 @@
-import { auth } from "@/lib/auth"
+﻿export const dynamic = "force-dynamic"
+
+import { safeAuth as auth } from "@/lib/auth-safe"
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import {
@@ -22,11 +24,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   const nav = [
     { href: "/admin", label: "Overview", icon: LayoutDashboard },
-    { href: "/admin/users", label: "Usuários", icon: Users },
+    { href: "/admin/users", label: "UsuÃ¡rios", icon: Users },
     { href: "/admin/partnerships", label: "Sociedades", icon: Handshake },
-    { href: "/admin/metrics", label: "Métricas", icon: TrendingUp },
-    { href: "/admin/verification", label: "Verificação KYC", icon: ShieldCheck },
-    { href: "/admin/settings", label: "Configurações", icon: Settings },
+    { href: "/admin/metrics", label: "MÃ©tricas", icon: TrendingUp },
+    { href: "/admin/verification", label: "VerificaÃ§Ã£o KYC", icon: ShieldCheck },
+    { href: "/admin/settings", label: "ConfiguraÃ§Ãµes", icon: Settings },
   ]
 
   return (
@@ -74,3 +76,4 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     </div>
   )
 }
+

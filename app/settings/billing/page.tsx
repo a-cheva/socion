@@ -1,4 +1,6 @@
-import { auth } from "@/lib/auth"
+﻿export const dynamic = "force-dynamic"
+
+import { safeAuth as auth } from "@/lib/auth-safe"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -25,7 +27,7 @@ export default async function BillingPage() {
         <Link href="/" className="text-2xl font-bold text-indigo-600">SocioN</Link>
       </header>
       <div className="max-w-2xl mx-auto py-8 px-4 flex flex-col gap-6">
-        <h1 className="text-2xl font-bold text-gray-900">Plano e cobrança</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Plano e cobranÃ§a</h1>
 
         <Card>
           <CardHeader>
@@ -57,11 +59,11 @@ export default async function BillingPage() {
                   "Propostas ilimitadas",
                   "Acesso completo ao Trust Engine",
                   "IA Evidence Engine",
-                  "Rede de confiança avançada",
+                  "Rede de confianÃ§a avanÃ§ada",
                   "Sala da sociedade com contratos",
                 ].map((f) => (
                   <li key={f} className="flex items-center gap-2">
-                    <span className="text-indigo-600">✓</span> {f}
+                    <span className="text-indigo-600">âœ“</span> {f}
                   </li>
                 ))}
               </ul>
@@ -73,3 +75,4 @@ export default async function BillingPage() {
     </div>
   )
 }
+
