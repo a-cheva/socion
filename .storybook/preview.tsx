@@ -10,11 +10,12 @@ const preview: Preview = {
       },
     },
     backgrounds: {
-      default: "canvas",
+      default: "socion-base",
       values: [
+        { name: "socion-base", value: "#0a0f0d" },
+        { name: "socion-card", value: "#111816" },
         { name: "canvas", value: "#ffffff" },
         { name: "surface-soft", value: "#f7f7f7" },
-        { name: "dark", value: "#222222" },
       ],
     },
     a11y: { test: "todo" },
