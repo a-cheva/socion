@@ -14,14 +14,15 @@ const MILESTONE_ICONS: Record<number, string> = {
   6: "✅",
 }
 
-export default async function PartnershipPage({ params }: { params: { id: string } }) {
+export default async function PartnershipPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const session = await auth()
   if (!session?.user?.id) redirect("/login")
 
   const userId = session.user.id
 
   const p = await prisma.partnership.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       userA: { select: { id: true, name: true, image: true, profile: { select: { headline: true, trustScore: true, location: true, bio: true } } } },
       userB: { select: { id: true, name: true, image: true, profile: { select: { headline: true, trustScore: true, location: true, bio: true } } } },

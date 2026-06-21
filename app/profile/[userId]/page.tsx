@@ -22,13 +22,14 @@ const VALUE_QUESTIONS: Record<string, [string, string]> = {
 
 const HOURS_OPTIONS = [10, 20, 40]
 
-export default async function ProfilePage({ params }: { params: { userId: string } }) {
+export default async function ProfilePage({ params }: { params: Promise<{ userId: string }> }) {
+  const { userId } = await params
   const session = await auth()
 
   let user: any = null
   try {
     user = await prisma.user.findUnique({
-      where: { id: params.userId },
+      where: { id: userId },
       include: {
         profile: {
           include: {
@@ -55,7 +56,7 @@ export default async function ProfilePage({ params }: { params: { userId: string
 
   const p = user.profile
   const score = Math.round(p.trustScore ?? 0)
-  const isOwnProfile = session?.user?.id === params.userId
+  const isOwnProfile = session?.user?.id === userId
 
   // Rede de Confiança — contatos em comum
   let contatosEmComum = 0
@@ -122,7 +123,7 @@ export default async function ProfilePage({ params }: { params: { userId: string
             </div>
             {!isOwnProfile && (
               <Link
-                href={`/dashboard/proposals/new?toUserId=${params.userId}`}
+                href={`/dashboard/proposals/new?toUserId=${userId}`}
                 className="bg-[#00a86b] hover:bg-[#009060] text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shrink-0"
               >
                 Enviar proposta
