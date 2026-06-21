@@ -24,19 +24,31 @@ const HOURS_OPTIONS = [10, 20, 40]
 export default async function ProfilePage({ params }: { params: { userId: string } }) {
   const session = await auth()
 
-  const user = await prisma.user.findUnique({
-    where: { id: params.userId },
-    include: {
-      profile: {
-        include: {
-          skills: { orderBy: { createdAt: "asc" } },
-          experiences: { orderBy: { startDate: "desc" } },
-          projects: { orderBy: { startDate: "desc" } },
+  let user: any = null
+  try {
+    user = await prisma.user.findUnique({
+      where: { id: params.userId },
+      include: {
+        profile: {
+          include: {
+            skills: true,
+            experiences: { orderBy: { startDate: "desc" } },
+            projects: { orderBy: { createdAt: "desc" } },
+          },
         },
+        sentLikes: { select: { toUserId: true } },
       },
-      sentLikes: { select: { toUserId: true } },
-    },
-  })
+    })
+  } catch (e: any) {
+    return (
+      <div className="min-h-screen bg-[#0a0f0d] flex items-center justify-center p-8">
+        <div className="bg-[#1a0a0a] border border-red-900 rounded-lg p-6 max-w-lg">
+          <h2 className="text-red-400 font-bold mb-2">Erro ao carregar perfil</h2>
+          <pre className="text-xs text-red-500 whitespace-pre-wrap">{e?.message}</pre>
+        </div>
+      </div>
+    )
+  }
 
   if (!user || !user.profile) notFound()
 
@@ -44,15 +56,19 @@ export default async function ProfilePage({ params }: { params: { userId: string
   const score = Math.round(p.trustScore ?? 0)
   const isOwnProfile = session?.user?.id === params.userId
 
-  // Rede de Confiança — contatos em comum (likes em comum)
+  // Rede de Confiança — contatos em comum
   let contatosEmComum = 0
-  if (session?.user?.id && !isOwnProfile) {
-    const viewerLikes = await prisma.like.findMany({
-      where: { fromUserId: session.user.id },
-      select: { toUserId: true },
-    })
-    const viewerSet = new Set(viewerLikes.map((l) => l.toUserId))
-    contatosEmComum = user.sentLikes.filter((l) => viewerSet.has(l.toUserId)).length
+  try {
+    if (session?.user?.id && !isOwnProfile) {
+      const viewerLikes = await prisma.like.findMany({
+        where: { fromUserId: session.user.id },
+        select: { toUserId: true },
+      })
+      const viewerSet = new Set(viewerLikes.map((l: any) => l.toUserId))
+      contatosEmComum = (user.sentLikes ?? []).filter((l: any) => viewerSet.has(l.toUserId)).length
+    }
+  } catch {
+    // rede de confiança falhou, continua sem ela
   }
 
   const subscores = [
