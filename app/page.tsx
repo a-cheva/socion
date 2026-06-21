@@ -66,7 +66,7 @@ export default function LandingPage() {
           <span className="inline-flex items-center gap-2 text-[#00a86b] text-sm bg-[#003d26] border border-[#00a86b]/30 px-3 py-1 rounded-full mb-5">
             ✦ LinkedIn + Tinder + Due Diligence de sócios
           </span>
-          <h1 className="text-5xl font-bold leading-[1.1] tracking-tight text-white mb-5">
+          <h1 className="text-6xl font-bold leading-[1.05] tracking-tight text-white mb-5">
             Encontre sócios em quem você <span className="text-[#00a86b]">pode confiar.</span>
           </h1>
           <p className="text-lg text-[#8a9e94] leading-relaxed mb-8 max-w-md">
