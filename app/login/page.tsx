@@ -130,7 +130,16 @@ export default function LoginPage() {
             </form>
           </div>
 
-          <p className="text-xs text-center text-[#4a5e54] mt-8 leading-relaxed">
+          <div className="mt-6">
+            <a
+              href="/feed"
+              className="w-full flex items-center justify-center gap-2 text-[#8a9e94] hover:text-white text-sm transition-colors py-2"
+            >
+              Explorar sem cadastro →
+            </a>
+          </div>
+
+          <p className="text-xs text-center text-[#4a5e54] mt-4 leading-relaxed">
             Ao entrar, você concorda com os{" "}
             <a href="/terms" className="text-[#8a9e94] hover:text-white transition-colors underline underline-offset-2">
               Termos de Uso
