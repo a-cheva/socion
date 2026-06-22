@@ -61,6 +61,8 @@ export default async function MyProfilePage() {
             bio: p?.bio ?? "",
             location: p?.location ?? "",
             weeklyHours: p?.weeklyHours ?? 40,
+            portfolioUrl: p?.portfolioUrl ?? "",
+            linkedinUrl: p?.linkedinUrl ?? "",
             trustScore: p?.trustScore ?? null,
             verificationStatus: p?.verificationStatus ?? "PENDING",
             skills: (p?.skills ?? []).map((s) => ({

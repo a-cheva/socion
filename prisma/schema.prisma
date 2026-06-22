@@ -140,6 +140,7 @@ model Profile {
   headline     String?
   location     String?
   linkedinUrl  String?
+  portfolioUrl String?
   linkedinData Json?
   bio          String? @db.Text
 

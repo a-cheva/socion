@@ -2,7 +2,8 @@ export const dynamic = "force-dynamic"
 
 import { prisma } from "@/lib/prisma"
 import { safeAuth as auth } from "@/lib/auth-safe"
-import { TikTokFeed } from "./TikTokFeed"
+import Link from "next/link"
+import { FeedCard } from "./FeedCard"
 
 export default async function FeedPage() {
   let profiles: any[] = []
@@ -32,7 +33,6 @@ export default async function FeedPage() {
         location: true,
         trustScore: true,
         bio: true,
-        pitchVideoUrl: true,
         user: { select: { id: true, name: true, image: true } },
       },
       take: 20,
@@ -53,5 +53,35 @@ export default async function FeedPage() {
     )
   }
 
-  return <TikTokFeed profiles={profiles} />
+  return (
+    <div className="min-h-screen bg-[#0a0f0d]">
+      <header className="bg-[#0d1310] border-b border-[#1e2e26] px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+        <Link href="/" className="text-xl font-bold text-[#00a86b]">SocioN</Link>
+        <nav className="flex items-center gap-1">
+          <Link href="/feed" className="px-3 py-1.5 text-sm text-white bg-[#1e2e26] rounded-lg">Feed</Link>
+          <Link href="/matches" className="px-3 py-1.5 text-sm text-[#8a9e94] hover:text-white rounded-lg transition-colors">Matches</Link>
+          <Link href="/dashboard/profile" className="px-3 py-1.5 text-sm text-[#8a9e94] hover:text-white rounded-lg transition-colors">Meu Perfil</Link>
+        </nav>
+      </header>
+
+      <div className="max-w-xl mx-auto py-8 px-4">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-xl font-bold text-white">
+            Feed de Sócios{" "}
+            <span className="text-[#4a5e54] font-normal text-base">({profiles.length})</span>
+          </h1>
+        </div>
+
+        {profiles.length === 0 && (
+          <p className="text-[#4a5e54] text-center py-12">Nenhum perfil encontrado.</p>
+        )}
+
+        <div className="flex flex-col gap-3">
+          {profiles.map((profile) => (
+            <FeedCard key={profile.id} profile={profile} />
+          ))}
+        </div>
+      </div>
+    </div>
+  )
 }

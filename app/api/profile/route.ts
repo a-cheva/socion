@@ -8,6 +8,8 @@ const schema = z.object({
   bio: z.string().max(2000).optional(),
   location: z.string().max(120).optional(),
   weeklyHours: z.number().min(0).max(80).optional(),
+  portfolioUrl: z.string().max(300).optional(),
+  linkedinUrl: z.string().max(300).optional(),
 })
 
 export async function PATCH(req: Request) {

@@ -369,6 +369,18 @@ const pitchVideos: Record<string, string> = {
   // "rafael.mendonca@fake.socion.app": "https://.../rafael.mp4",
 }
 
+// Links de portfólio + LinkedIn por perfil (fake, para demonstração)
+const links: Record<string, { portfolio: string; linkedin: string }> = {
+  "rafael.mendonca@fake.socion.app": { portfolio: "https://github.com/rafael-mendonca", linkedin: "https://linkedin.com/in/rafael-mendonca" },
+  "camila.torres@fake.socion.app": { portfolio: "https://camilatorres.growth.site", linkedin: "https://linkedin.com/in/camila-torres" },
+  "bruno.castilho@fake.socion.app": { portfolio: "https://brunocastilho.com", linkedin: "https://linkedin.com/in/bruno-castilho" },
+  "juliana.freitas@fake.socion.app": { portfolio: "https://dribbble.com/juliana-freitas", linkedin: "https://linkedin.com/in/juliana-freitas" },
+  "lucas.yamamoto@fake.socion.app": { portfolio: "https://lucasyamamoto.com", linkedin: "https://linkedin.com/in/lucas-yamamoto" },
+  "mariana.lopes@fake.socion.app": { portfolio: "https://lopesadvocacia.com.br", linkedin: "https://linkedin.com/in/mariana-lopes" },
+  "diego.carvalho@fake.socion.app": { portfolio: "https://github.com/diego-carvalho", linkedin: "https://linkedin.com/in/diego-carvalho" },
+  "fernanda.oliveira@fake.socion.app": { portfolio: "https://fernandaoliveira.co", linkedin: "https://linkedin.com/in/fernanda-oliveira" },
+}
+
 async function main() {
   console.log("🌱 Seeding fake profiles...")
 
@@ -395,6 +407,7 @@ async function main() {
       ...u.profile,
       ...(ext ? { compatibilityScore: ext.compatibilityScore, values: ext.values } : {}),
       pitchVideoUrl: pitchVideos[u.email] ?? null,
+      ...(links[u.email] ? { portfolioUrl: links[u.email].portfolio, linkedinUrl: links[u.email].linkedin } : {}),
     }
 
     const profile = await prisma.profile.upsert({

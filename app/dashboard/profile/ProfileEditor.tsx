@@ -28,6 +28,8 @@ interface Props {
     bio: string
     location: string
     weeklyHours: number
+    portfolioUrl: string
+    linkedinUrl: string
     trustScore: number | null
     verificationStatus: string
     skills: Skill[]
@@ -44,6 +46,8 @@ export function ProfileEditor({ initial }: Props) {
   const [bio, setBio] = useState(initial.bio)
   const [location, setLocation] = useState(initial.location)
   const [weeklyHours, setWeeklyHours] = useState(initial.weeklyHours)
+  const [portfolioUrl, setPortfolioUrl] = useState(initial.portfolioUrl)
+  const [linkedinUrl, setLinkedinUrl] = useState(initial.linkedinUrl)
   const [savingInfo, setSavingInfo] = useState(false)
 
   const [skills, setSkills] = useState<Skill[]>(initial.skills)
@@ -97,7 +101,7 @@ export function ProfileEditor({ initial }: Props) {
       const res = await fetch("/api/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ headline, bio, location, weeklyHours }),
+        body: JSON.stringify({ headline, bio, location, weeklyHours, portfolioUrl, linkedinUrl }),
       })
       if (res.ok) {
         toast.success("Perfil atualizado!")
@@ -206,6 +210,26 @@ export function ProfileEditor({ initial }: Props) {
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             placeholder="São Paulo, SP"
+            className="w-full bg-[#0d1310] border border-[#2a3d32] rounded-lg px-4 py-2.5 text-white placeholder-[#4a5e54] focus:outline-none focus:border-[#00a86b]"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm text-[#8a9e94] mb-1.5">Portfólio / site</label>
+          <input
+            value={portfolioUrl}
+            onChange={(e) => setPortfolioUrl(e.target.value)}
+            placeholder="https://seuportfolio.com"
+            className="w-full bg-[#0d1310] border border-[#2a3d32] rounded-lg px-4 py-2.5 text-white placeholder-[#4a5e54] focus:outline-none focus:border-[#00a86b]"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm text-[#8a9e94] mb-1.5">LinkedIn</label>
+          <input
+            value={linkedinUrl}
+            onChange={(e) => setLinkedinUrl(e.target.value)}
+            placeholder="https://linkedin.com/in/voce"
             className="w-full bg-[#0d1310] border border-[#2a3d32] rounded-lg px-4 py-2.5 text-white placeholder-[#4a5e54] focus:outline-none focus:border-[#00a86b]"
           />
         </div>
