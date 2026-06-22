@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { VideoRecorder } from "./VideoRecorder"
 
 const ROLES = ["Tecnologia", "Marketing", "Produto", "Vendas", "Operações", "Finanças", "Jurídico"]
 const BUSINESS_TYPES = ["SaaS", "Marketplace", "IA", "E-commerce", "Agência", "Serviços"]
@@ -255,6 +256,9 @@ export default function OnboardingPage() {
               ))}
             </div>
           </div>
+
+          {/* Vídeo de apresentação */}
+          <VideoRecorder />
 
           {/* Submit */}
           <button
