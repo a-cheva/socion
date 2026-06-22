@@ -44,3 +44,16 @@ export function daysLeftInTrial(trialEndsAt: Date | null | undefined): number {
   const diff = new Date(trialEndsAt).getTime() - Date.now()
   return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)))
 }
+
+type Resource = "likes" | "proposals" | "profileViews"
+
+/** Verifica se o uso atual ainda está dentro do limite do plano. */
+export function checkUsageLimit(
+  plan: Plan,
+  resource: Resource,
+  currentUsage: number
+): { allowed: boolean; limit: number; remaining: number } {
+  const limit = PLAN_LIMITS[plan]?.[resource] ?? 0
+  const remaining = limit === Infinity ? Infinity : Math.max(0, limit - currentUsage)
+  return { allowed: currentUsage < limit, limit, remaining }
+}

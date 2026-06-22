@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { daysLeftInTrial } from "@/lib/plans"
+import { PaywallGate } from "@/components/PaywallGate"
 import Link from "next/link"
 
 export default async function DashboardPage() {
@@ -62,6 +63,12 @@ export default async function DashboardPage() {
           </div>
         )}
 
+        <PaywallGate
+          plan={user.plan}
+          trialEndsAt={user.trialEndsAt}
+          stripeCurrentPeriodEnd={user.stripeCurrentPeriodEnd}
+          feature="acompanhar suas sociedades"
+        >
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card>
@@ -129,6 +136,7 @@ export default async function DashboardPage() {
             )}
           </CardContent>
         </Card>
+        </PaywallGate>
       </div>
     </div>
   )
