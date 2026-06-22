@@ -362,18 +362,11 @@ const enrichment: Record<string, {
   },
 }
 
-// Vídeos de apresentação (pitch). Exemplos públicos estáveis — todos os 8 perfis têm vídeo.
-// Troque pelos vídeos reais (gravados no onboarding -> Vercel Blob) quando disponíveis.
-const GTV = "https://storage.googleapis.com/gtv-videos-bucket/sample"
+// Vídeos de apresentação (pitch). Os perfis fake usam a FOTO em tela cheia (coerente).
+// Para vídeos reais por perfil, cole a URL .mp4 aqui (ex.: gerada por IA no D-ID/HeyGen
+// ou gravada no onboarding -> Vercel Blob). Perfis sem URL caem para a foto.
 const pitchVideos: Record<string, string> = {
-  "rafael.mendonca@fake.socion.app": `${GTV}/ForBiggerJoyrides.mp4`,
-  "camila.torres@fake.socion.app": `${GTV}/ForBiggerMeltdowns.mp4`,
-  "bruno.castilho@fake.socion.app": `${GTV}/ForBiggerBlazes.mp4`,
-  "juliana.freitas@fake.socion.app": `${GTV}/ForBiggerEscapes.mp4`,
-  "lucas.yamamoto@fake.socion.app": `${GTV}/WeAreGoingOnBullrun.mp4`,
-  "mariana.lopes@fake.socion.app": `${GTV}/ForBiggerFun.mp4`,
-  "diego.carvalho@fake.socion.app": `${GTV}/SubaruOutbackOnStreetAndDirt.mp4`,
-  "fernanda.oliveira@fake.socion.app": `${GTV}/VolkswagenGTIReview.mp4`,
+  // "rafael.mendonca@fake.socion.app": "https://.../rafael.mp4",
 }
 
 async function main() {
@@ -401,7 +394,7 @@ async function main() {
     const profileData = {
       ...u.profile,
       ...(ext ? { compatibilityScore: ext.compatibilityScore, values: ext.values } : {}),
-      ...(pitchVideos[u.email] ? { pitchVideoUrl: pitchVideos[u.email] } : {}),
+      pitchVideoUrl: pitchVideos[u.email] ?? null,
     }
 
     const profile = await prisma.profile.upsert({

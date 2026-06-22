@@ -115,7 +115,7 @@ function FeedItem({ profile }: { profile: Profile }) {
         <img
           src={profile.user.image}
           alt={profile.user.name ?? ""}
-          className="absolute inset-0 w-full h-full object-cover scale-110 blur-[1px]"
+          className="absolute inset-0 w-full h-full object-cover animate-[kenburns_18s_ease-in-out_infinite_alternate]"
         />
       ) : (
         <div className="absolute inset-0 bg-gradient-to-br from-[#003d26] to-[#0a0f0d]" />
@@ -127,7 +127,7 @@ function FeedItem({ profile }: { profile: Profile }) {
       {/* Badge "vídeo de apresentação" */}
       <div className="absolute top-20 left-5 z-10">
         <span className="text-xs text-white/70 bg-black/40 px-2 py-1 rounded-full backdrop-blur">
-          {profile.pitchVideoUrl ? "▶ Apresentação" : "Sem vídeo · foto do perfil"}
+          {profile.pitchVideoUrl ? "▶ Apresentação" : "Foto do perfil"}
         </span>
       </div>
 

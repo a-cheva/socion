@@ -87,3 +87,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes kenburns {
+  from { transform: scale(1.05) translateY(0); }
+  to   { transform: scale(1.18) translateY(-2%); }
+}
