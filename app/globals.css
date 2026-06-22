@@ -92,3 +92,8 @@
   from { transform: scale(1.05) translateY(0); }
   to   { transform: scale(1.18) translateY(-2%); }
 }
+
+@keyframes loadingbar {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
