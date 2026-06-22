@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic"
 import Link from "next/link"
 import { prisma } from "@/lib/prisma"
 import { Testimonials } from "./Testimonials"
+import { Reveal } from "./Reveal"
 
 async function getStats() {
   try {
@@ -58,27 +59,27 @@ export default async function LandingPage() {
 
       {/* Hero */}
       <section className="relative px-6 pt-24 pb-20 text-center overflow-hidden">
-        <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full bg-[#00a86b] opacity-[0.08] blur-[130px] pointer-events-none" />
+        <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full bg-[#00a86b] blur-[130px] pointer-events-none animate-glowpulse" />
         <div className="relative z-10 max-w-3xl mx-auto">
-          <span className="inline-flex items-center gap-2 text-[#00a86b] text-sm bg-[#003d26] border border-[#00a86b]/30 px-3 py-1 rounded-full mb-7">
+          <span className="inline-flex items-center gap-2 text-[#00a86b] text-sm bg-[#003d26] border border-[#00a86b]/30 px-3 py-1 rounded-full mb-7 animate-fadeup" style={{ animationDelay: "0ms" }}>
             ✦ A camada de confiança para formar sociedades
           </span>
-          <h1 className="text-6xl font-bold leading-[1.05] tracking-tight mb-6">
+          <h1 className="text-6xl font-bold leading-[1.05] tracking-tight mb-6 animate-fadeup" style={{ animationDelay: "80ms" }}>
             Escolha seu sócio com<br /><span className="text-[#00a86b]">dados, não com fé.</span>
           </h1>
-          <p className="text-lg text-[#8a9e94] leading-relaxed max-w-xl mx-auto mb-9">
+          <p className="text-lg text-[#8a9e94] leading-relaxed max-w-xl mx-auto mb-9 animate-fadeup" style={{ animationDelay: "180ms" }}>
             O SocioN valida identidade, competências e reputação antes de qualquer contrato.
             Transforme confiança subjetiva em um Trust Score de 0 a 100.
           </p>
-          <div className="flex flex-col items-center gap-3">
-            <Link href="/login" className="bg-[#00a86b] hover:bg-[#009060] text-white px-8 py-4 rounded-xl font-semibold text-lg transition-colors">
+          <div className="flex flex-col items-center gap-3 animate-fadeup" style={{ animationDelay: "280ms" }}>
+            <Link href="/login" className="bg-[#00a86b] hover:bg-[#009060] hover:scale-[1.03] active:scale-95 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-transform">
               Criar conta grátis →
             </Link>
             <span className="text-[#4a5e54] text-sm">14 dias grátis · sem cartão de crédito</span>
           </div>
 
           {/* Prova social — números reais */}
-          <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto mt-16 pt-10 border-t border-[#1e2e26]">
+          <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto mt-16 pt-10 border-t border-[#1e2e26] animate-fadeup" style={{ animationDelay: "400ms" }}>
             <Stat value={`${stats.verified}`} label="perfis verificados" />
             <Stat value={stats.avgTrust ? `${stats.avgTrust}` : "—"} label="Trust Score médio" />
             <Stat value={`${stats.matches}`} label="matches formados" />
@@ -88,26 +89,30 @@ export default async function LandingPage() {
 
       {/* Problema (dor) */}
       <section id="problema" className="px-6 py-24 max-w-4xl mx-auto w-full text-center">
-        <p className="text-xs text-[#4a5e54] uppercase tracking-widest mb-4">O problema</p>
-        <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
-          <span className="text-[#8a9e94]">8 em cada 10 sociedades fracassam.</span><br />
-          Quase sempre pelo mesmo motivo: <span className="text-white">confiança mal colocada.</span>
-        </h2>
-        <p className="text-lg text-[#8a9e94] leading-relaxed max-w-2xl mx-auto mb-12">
-          Você conhece alguém num evento, troca ideias, sente um "match" — e aposta o seu negócio
-          nisso. Sem saber se a pessoa fez o que diz, entrega o que promete, ou é compatível com você.
-          O resultado é caro: tempo, dinheiro e energia perdidos numa relação que não tinha base.
-        </p>
+        <Reveal>
+          <p className="text-xs text-[#4a5e54] uppercase tracking-widest mb-4">O problema</p>
+          <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
+            <span className="text-[#8a9e94]">8 em cada 10 sociedades fracassam.</span><br />
+            Quase sempre pelo mesmo motivo: <span className="text-white">confiança mal colocada.</span>
+          </h2>
+          <p className="text-lg text-[#8a9e94] leading-relaxed max-w-2xl mx-auto mb-12">
+            Você conhece alguém num evento, troca ideias, sente um "match" — e aposta o seu negócio
+            nisso. Sem saber se a pessoa fez o que diz, entrega o que promete, ou é compatível com você.
+            O resultado é caro: tempo, dinheiro e energia perdidos numa relação que não tinha base.
+          </p>
+        </Reveal>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
           {[
             { t: "Currículo inflado", d: "Títulos e experiências que ninguém verifica de verdade." },
             { t: "Promessas sem prova", d: "“Já escalei uma startup” — mas onde estão as evidências?" },
             { t: "Valores incompatíveis", d: "Descobertos tarde demais, já no meio do conflito." },
-          ].map((p) => (
-            <div key={p.t} className="bg-[#111816] border border-[#1e2e26] rounded-2xl p-6">
-              <h3 className="font-semibold mb-2">{p.t}</h3>
-              <p className="text-sm text-[#8a9e94] leading-relaxed">{p.d}</p>
-            </div>
+          ].map((p, i) => (
+            <Reveal key={p.t} delay={i * 120} from="up">
+              <div className="bg-[#111816] border border-[#1e2e26] rounded-2xl p-6 h-full hover:border-[#2a3d32] transition-colors">
+                <h3 className="font-semibold mb-2">{p.t}</h3>
+                <p className="text-sm text-[#8a9e94] leading-relaxed">{p.d}</p>
+              </div>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -128,12 +133,14 @@ export default async function LandingPage() {
           </div>
 
           <div className="grid md:grid-cols-5 gap-3">
-            {trustFormula.map((f) => (
-              <div key={f.label} className="bg-[#111816] border border-[#1e2e26] rounded-2xl p-5 flex flex-col">
-                <span className="text-[#00a86b] text-2xl font-bold mb-3">{f.weight}</span>
-                <h3 className="font-semibold text-sm mb-1">{f.label}</h3>
-                <p className="text-xs text-[#8a9e94] leading-relaxed">{f.desc}</p>
-              </div>
+            {trustFormula.map((f, i) => (
+              <Reveal key={f.label} delay={i * 90} from="scale">
+                <div className="bg-[#111816] border border-[#1e2e26] rounded-2xl p-5 flex flex-col h-full hover:border-[#00a86b]/40 transition-colors">
+                  <span className="text-[#00a86b] text-2xl font-bold mb-3">{f.weight}</span>
+                  <h3 className="font-semibold text-sm mb-1">{f.label}</h3>
+                  <p className="text-xs text-[#8a9e94] leading-relaxed">{f.desc}</p>
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -141,17 +148,21 @@ export default async function LandingPage() {
 
       {/* Como funciona */}
       <section id="como" className="px-6 py-24 max-w-5xl mx-auto w-full">
-        <p className="text-xs text-[#4a5e54] uppercase tracking-widest mb-4 text-center">Como funciona</p>
-        <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-14 text-center">Do cadastro ao contrato.</h2>
+        <Reveal>
+          <p className="text-xs text-[#4a5e54] uppercase tracking-widest mb-4 text-center">Como funciona</p>
+          <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-14 text-center">Do cadastro ao contrato.</h2>
+        </Reveal>
         <div className="grid md:grid-cols-2 gap-4">
-          {steps.map((s) => (
-            <div key={s.n} className="bg-[#111816] border border-[#1e2e26] rounded-2xl p-7 flex gap-5">
-              <span className="text-[#00a86b]/40 text-3xl font-bold shrink-0">{s.n}</span>
-              <div>
-                <h3 className="font-semibold text-lg mb-1.5">{s.title}</h3>
-                <p className="text-sm text-[#8a9e94] leading-relaxed">{s.desc}</p>
+          {steps.map((s, i) => (
+            <Reveal key={s.n} delay={i * 100} from={i % 2 === 0 ? "left" : "right"}>
+              <div className="bg-[#111816] border border-[#1e2e26] rounded-2xl p-7 flex gap-5 h-full hover:border-[#2a3d32] transition-colors">
+                <span className="text-[#00a86b]/40 text-3xl font-bold shrink-0">{s.n}</span>
+                <div>
+                  <h3 className="font-semibold text-lg mb-1.5">{s.title}</h3>
+                  <p className="text-sm text-[#8a9e94] leading-relaxed">{s.desc}</p>
+                </div>
               </div>
-            </div>
+            </Reveal>
           ))}
         </div>
       </section>
