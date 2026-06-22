@@ -5,6 +5,7 @@ import LinkedIn from "next-auth/providers/linkedin"
 import Credentials from "next-auth/providers/credentials"
 import { prisma } from "@/lib/prisma"
 import { Plan } from "@prisma/client"
+import bcrypt from "bcryptjs"
 
 const providers: any[] = []
 
@@ -21,6 +22,31 @@ if (process.env.AUTH_LINKEDIN_ID && process.env.AUTH_LINKEDIN_SECRET) {
     })
   )
 }
+
+// E-mail + senha (cadastro próprio, mesmo banco Neon)
+providers.push(
+  Credentials({
+    id: "password",
+    name: "E-mail e senha",
+    credentials: {
+      email: { label: "E-mail", type: "email" },
+      password: { label: "Senha", type: "password" },
+    },
+    async authorize(creds) {
+      const email = (creds?.email as string)?.toLowerCase().trim()
+      const password = creds?.password as string
+      if (!email || !password) return null
+
+      const user = await prisma.user.findUnique({ where: { email } })
+      if (!user?.passwordHash) return null
+
+      const ok = await bcrypt.compare(password, user.passwordHash)
+      if (!ok) return null
+
+      return { id: user.id, name: user.name, email: user.email, image: user.image }
+    },
+  })
+)
 
 // Demo login — no password needed
 providers.push(

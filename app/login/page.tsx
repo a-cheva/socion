@@ -1,6 +1,6 @@
 import { signIn } from "@/lib/auth"
 import { redirect } from "next/navigation"
-import { Button } from "@/components/ui/button"
+import { PasswordForm } from "./PasswordForm"
 
 const benefits = [
   {
@@ -130,6 +130,14 @@ export default function LoginPage() {
               </button>
             </form>
           </div>
+
+          <div className="relative flex items-center gap-3 py-3">
+            <div className="flex-1 h-px bg-[#1e2e26]" />
+            <span className="text-[#4a5e54] text-xs">ou com e-mail</span>
+            <div className="flex-1 h-px bg-[#1e2e26]" />
+          </div>
+
+          <PasswordForm />
 
           <form
             action={async () => {
