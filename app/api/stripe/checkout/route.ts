@@ -9,6 +9,13 @@ export async function POST() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
+  if (!process.env.STRIPE_SECRET_KEY || !process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID) {
+    return NextResponse.json(
+      { error: "Pagamentos ainda não configurados. Adicione as chaves do Stripe." },
+      { status: 503 }
+    )
+  }
+
   const stripe = getStripe()
   const user = await prisma.user.findUnique({ where: { id: session.user.id } })
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 })

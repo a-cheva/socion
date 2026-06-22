@@ -6,6 +6,7 @@ import { redirect } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { CheckoutButton } from "@/components/billing/checkout-button"
+import { PortalButton } from "@/components/billing/portal-button"
 import Link from "next/link"
 
 export default async function BillingPage() {
@@ -44,6 +45,11 @@ export default async function BillingPage() {
                 </span>
               )}
             </div>
+            {isPro && (
+              <div className="mt-4">
+                <PortalButton />
+              </div>
+            )}
           </CardContent>
         </Card>
 

@@ -14,7 +14,8 @@ export function CheckoutButton() {
       const { url } = await res.json()
       window.location.href = url
     } else {
-      toast.error("Erro ao iniciar pagamento. Tente novamente.")
+      const d = await res.json().catch(() => ({}))
+      toast.error(d.error ?? "Erro ao iniciar pagamento. Tente novamente.")
       setLoading(false)
     }
   }
