@@ -6,6 +6,13 @@ import { Testimonials } from "./Testimonials"
 import { Reveal } from "./Reveal"
 import { TrustScoreDemo } from "./TrustScoreDemo"
 import { Faq } from "./Faq"
+import { LandingNav } from "./LandingNav"
+import { CountUp } from "./CountUp"
+import {
+  FileWarning, BadgeX, Scale,
+  ShieldCheck, Briefcase, Award, Star, Network,
+  UserPlus, Gauge, Heart, Handshake,
+} from "lucide-react"
 
 async function getStats() {
   try {
@@ -27,18 +34,24 @@ async function getStats() {
 }
 
 const trustFormula = [
-  { label: "Identidade", weight: "20%", desc: "KYC com documentos e selfie" },
-  { label: "Histórico profissional", weight: "20%", desc: "Experiências importadas e validadas" },
-  { label: "Competências verificadas", weight: "20%", desc: "Skills com evidência real" },
-  { label: "Evidências de execução", weight: "20%", desc: "Projetos e resultados entregues" },
-  { label: "Rede de confiança", weight: "20%", desc: "Contatos em comum reais" },
+  { label: "Identidade", weight: "20%", desc: "KYC com documentos e selfie", Icon: ShieldCheck },
+  { label: "Histórico profissional", weight: "20%", desc: "Experiências importadas e validadas", Icon: Briefcase },
+  { label: "Competências verificadas", weight: "20%", desc: "Skills com evidência real", Icon: Award },
+  { label: "Evidências de execução", weight: "20%", desc: "Projetos e resultados entregues", Icon: Star },
+  { label: "Rede de confiança", weight: "20%", desc: "Contatos em comum reais", Icon: Network },
 ]
 
 const steps = [
-  { n: "01", title: "Crie seu perfil", desc: "Importe do LinkedIn, grave um pitch e adicione evidências das suas competências." },
-  { n: "02", title: "Construa seu Trust Score", desc: "Validamos identidade, histórico e reputação — sua confiança vira um número de 0 a 100." },
-  { n: "03", title: "Dê match com complementares", desc: "O algoritmo cruza habilidades e objetivos. Match só acontece quando o interesse é mútuo." },
-  { n: "04", title: "Forme a sociedade", desc: "Da proposta ao contrato assinado, tudo numa sala única com histórico verificável." },
+  { n: "01", title: "Crie seu perfil", desc: "Importe do LinkedIn, grave um pitch e adicione evidências das suas competências.", Icon: UserPlus },
+  { n: "02", title: "Construa seu Trust Score", desc: "Validamos identidade, histórico e reputação — sua confiança vira um número de 0 a 100.", Icon: Gauge },
+  { n: "03", title: "Dê match com complementares", desc: "O algoritmo cruza habilidades e objetivos. Match só acontece quando o interesse é mútuo.", Icon: Heart },
+  { n: "04", title: "Forme a sociedade", desc: "Da proposta ao contrato assinado, tudo numa sala única com histórico verificável.", Icon: Handshake },
+]
+
+const problems = [
+  { t: "Currículo inflado", d: "Títulos e experiências que ninguém verifica de verdade.", Icon: FileWarning },
+  { t: "Promessas sem prova", d: "“Já escalei uma startup” — mas onde estão as evidências?", Icon: BadgeX },
+  { t: "Valores incompatíveis", d: "Descobertos tarde demais, já no meio do conflito.", Icon: Scale },
 ]
 
 const focusRing =
@@ -62,16 +75,7 @@ export default async function LandingPage() {
   return (
     <main className="flex flex-col min-h-screen bg-[#0a0f0d] text-white selection:bg-[#00a86b]/30">
       {/* Nav */}
-      <nav className="flex items-center justify-between px-5 sm:px-8 py-4 sticky top-0 z-30 bg-[#0a0f0d]/70 backdrop-blur-xl border-b border-white/[0.06]">
-        <span className="text-lg font-semibold tracking-tight">Socio<span className="text-[#00a86b]">N</span></span>
-        <div className="hidden md:flex items-center gap-8 text-sm text-[#8a9e94]">
-          <a href="#problema" className="hover:text-white transition-colors">O problema</a>
-          <a href="#trust" className="hover:text-white transition-colors">Trust Score</a>
-          <a href="#como" className="hover:text-white transition-colors">Como funciona</a>
-          <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
-        </div>
-        <CTA>Criar conta grátis</CTA>
-      </nav>
+      <LandingNav />
 
       {/* Hero */}
       <section className="relative px-6 pt-20 sm:pt-28 pb-20 sm:pb-28 text-center overflow-hidden">
@@ -107,9 +111,9 @@ export default async function LandingPage() {
 
           {/* Prova social — números reais */}
           <div className="grid grid-cols-3 max-w-lg mx-auto mt-16 sm:mt-20 pt-10 border-t border-white/[0.06] animate-fadeup" style={{ animationDelay: "400ms" }}>
-            <Stat value={`${stats.verified}`} label="perfis verificados" />
-            <Stat value={stats.avgTrust ? `${stats.avgTrust}` : "—"} label="Trust Score médio" divider />
-            <Stat value={`${stats.matches}`} label="matches formados" divider />
+            <Stat label="perfis verificados"><CountUp to={stats.verified} /></Stat>
+            <Stat label="Trust Score médio" divider>{stats.avgTrust ? <CountUp to={stats.avgTrust} /> : "—"}</Stat>
+            <Stat label="matches formados" divider><CountUp to={stats.matches} /></Stat>
           </div>
         </div>
       </section>
@@ -139,13 +143,12 @@ export default async function LandingPage() {
           </p>
         </Reveal>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
-          {[
-            { t: "Currículo inflado", d: "Títulos e experiências que ninguém verifica de verdade." },
-            { t: "Promessas sem prova", d: "“Já escalei uma startup” — mas onde estão as evidências?" },
-            { t: "Valores incompatíveis", d: "Descobertos tarde demais, já no meio do conflito." },
-          ].map((p, i) => (
+          {problems.map((p, i) => (
             <Reveal key={p.t} delay={i * 120} from="up">
               <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6 h-full hover:bg-white/[0.04] transition-colors">
+                <div className="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-4">
+                  <p.Icon className="w-5 h-5 text-red-400" strokeWidth={1.75} />
+                </div>
                 <h3 className="font-semibold mb-2">{p.t}</h3>
                 <p className="text-sm text-[#8a9e94] leading-relaxed">{p.d}</p>
               </div>
@@ -175,7 +178,10 @@ export default async function LandingPage() {
             {trustFormula.map((f, i) => (
               <Reveal key={f.label} delay={i * 80} from="scale">
                 <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5 flex flex-col h-full hover:border-[#00a86b]/40 transition-colors">
-                  <span className="text-[#00a86b] text-2xl font-bold mb-3 tracking-tight">{f.weight}</span>
+                  <div className="w-9 h-9 rounded-lg bg-[#00a86b]/10 border border-[#00a86b]/20 flex items-center justify-center mb-4">
+                    <f.Icon className="w-[18px] h-[18px] text-[#00a86b]" strokeWidth={1.75} />
+                  </div>
+                  <span className="text-[#00a86b] text-2xl font-bold mb-1 tracking-tight">{f.weight}</span>
                   <h3 className="font-semibold text-sm mb-1">{f.label}</h3>
                   <p className="text-xs text-[#8a9e94] leading-relaxed">{f.desc}</p>
                 </div>
@@ -197,7 +203,12 @@ export default async function LandingPage() {
           {steps.map((s, i) => (
             <Reveal key={s.n} delay={i * 100} from={i % 2 === 0 ? "left" : "right"}>
               <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-7 flex gap-5 h-full hover:bg-white/[0.04] transition-colors">
-                <span className="text-[#00a86b]/30 text-3xl font-bold shrink-0 tabular-nums">{s.n}</span>
+                <div className="shrink-0">
+                  <div className="w-11 h-11 rounded-xl bg-[#00a86b]/10 border border-[#00a86b]/20 flex items-center justify-center">
+                    <s.Icon className="w-5 h-5 text-[#00a86b]" strokeWidth={1.75} />
+                  </div>
+                  <span className="block text-center text-[#4a5e54] text-xs font-bold mt-2 tabular-nums">{s.n}</span>
+                </div>
                 <div>
                   <h3 className="font-semibold text-lg mb-1.5">{s.title}</h3>
                   <p className="text-sm text-[#8a9e94] leading-relaxed">{s.desc}</p>
@@ -237,10 +248,10 @@ export default async function LandingPage() {
   )
 }
 
-function Stat({ value, label, divider }: { value: string; label: string; divider?: boolean }) {
+function Stat({ children, label, divider }: { children: React.ReactNode; label: string; divider?: boolean }) {
   return (
     <div className={divider ? "border-l border-white/[0.06]" : ""}>
-      <div className="text-3xl sm:text-4xl font-bold text-white tracking-tight tabular-nums">{value}</div>
+      <div className="text-3xl sm:text-4xl font-bold text-white tracking-tight tabular-nums">{children}</div>
       <div className="text-xs text-[#4a5e54] mt-1.5">{label}</div>
     </div>
   )
