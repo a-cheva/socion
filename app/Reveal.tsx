@@ -32,10 +32,10 @@ export function Reveal({ children, delay = 0, className = "", from = "up" }: Pro
   }, [])
 
   const hiddenTransform =
-    from === "left" ? "translateX(-24px)"
-    : from === "right" ? "translateX(24px)"
-    : from === "scale" ? "scale(0.96)"
-    : "translateY(24px)"
+    from === "left" ? "translateX(-44px)"
+    : from === "right" ? "translateX(44px)"
+    : from === "scale" ? "scale(0.9)"
+    : "translateY(44px)"
 
   return (
     <div
@@ -44,8 +44,9 @@ export function Reveal({ children, delay = 0, className = "", from = "up" }: Pro
       style={{
         opacity: shown ? 1 : 0,
         transform: shown ? "none" : hiddenTransform,
-        transition: `opacity 0.7s cubic-bezier(0.22,1,0.36,1) ${delay}ms, transform 0.7s cubic-bezier(0.22,1,0.36,1) ${delay}ms`,
-        willChange: "opacity, transform",
+        filter: shown ? "blur(0)" : "blur(8px)",
+        transition: `opacity 0.85s cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 0.85s cubic-bezier(0.16,1,0.3,1) ${delay}ms, filter 0.85s ease ${delay}ms`,
+        willChange: "opacity, transform, filter",
       }}
     >
       {children}

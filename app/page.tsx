@@ -89,8 +89,8 @@ export default async function LandingPage() {
             <span className="w-1.5 h-1.5 rounded-full bg-[#00a86b]" />
             A camada de confiança para formar sociedades
           </span>
-          <h1 className="text-[2.6rem] leading-[1.06] sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6 animate-fadeup" style={{ animationDelay: "80ms" }}>
-            Escolha seu sócio com<br />
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-[-0.03em] leading-[1.04] mb-6 text-balance animate-fadeup" style={{ animationDelay: "80ms" }}>
+            Escolha seu sócio com{" "}
             <span className="text-[#00a86b]">dados, não com fé.</span>
           </h1>
           <p className="text-base sm:text-lg text-[#8a9e94] leading-relaxed max-w-xl mx-auto mb-10 animate-fadeup" style={{ animationDelay: "180ms" }}>
