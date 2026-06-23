@@ -113,3 +113,5 @@
 @media (prefers-reduced-motion: reduce) {
   .animate-fadeup, .animate-glowpulse { animation: none; }
 }
+
+html { scroll-behavior: smooth; }

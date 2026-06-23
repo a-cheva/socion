@@ -4,6 +4,8 @@ import Link from "next/link"
 import { prisma } from "@/lib/prisma"
 import { Testimonials } from "./Testimonials"
 import { Reveal } from "./Reveal"
+import { TrustScoreDemo } from "./TrustScoreDemo"
+import { Faq } from "./Faq"
 
 async function getStats() {
   try {
@@ -66,6 +68,7 @@ export default async function LandingPage() {
           <a href="#problema" className="hover:text-white transition-colors">O problema</a>
           <a href="#trust" className="hover:text-white transition-colors">Trust Score</a>
           <a href="#como" className="hover:text-white transition-colors">Como funciona</a>
+          <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
         </div>
         <CTA>Criar conta grátis</CTA>
       </nav>
@@ -109,6 +112,16 @@ export default async function LandingPage() {
             <Stat value={`${stats.matches}`} label="matches formados" divider />
           </div>
         </div>
+      </section>
+
+      {/* Preview do produto — Trust Score animado */}
+      <section className="px-6 pb-24 sm:pb-28 -mt-4">
+        <Reveal from="scale">
+          <TrustScoreDemo />
+          <p className="text-center text-[#4a5e54] text-sm mt-6">
+            Cada perfil mostra um Trust Score real, calculado a partir de evidências.
+          </p>
+        </Reveal>
       </section>
 
       {/* Problema (dor) */}
@@ -197,6 +210,9 @@ export default async function LandingPage() {
 
       {/* Depoimentos */}
       <Testimonials />
+
+      {/* FAQ */}
+      <Faq />
 
       {/* CTA final */}
       <section className="relative mx-6 mb-16 max-w-5xl md:mx-auto w-[calc(100%-3rem)] rounded-[28px] border border-white/[0.08] bg-[#0c1210] py-20 sm:py-24 text-center px-6 overflow-hidden">
